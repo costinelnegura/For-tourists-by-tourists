@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/attraction_details_image"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="@string/attraction_name"/>
+
+    <TextView
+        android:id="@+id/attraction_details_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="@string/attraction_location"/>
+
+    <TextView
+        android:id="@+id/attraction_details_location"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="@string/attraction_description"/>
+
+    <TextView
+        android:id="@+id/attraction_details_description"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="@string/attraction_price"/>
+
+    <TextView
+        android:id="@+id/attraction_details_price"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+</LinearLayout>

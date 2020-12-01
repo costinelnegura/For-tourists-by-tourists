@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">For tourists by tourists</string>
+    <string name="title1">Find Your</string>
+    <string name="title2">Next Attraction</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_account">Create an account</string>
+    <string name="yes_account">I have an account</string>
+    <string name="search_image">Search for an image</string>
+    <string name="upload_image">Upload image</string>
+    <string name="add_attraction">Add Attraction</string>
+    <string name="choose_image">Choose Image</string>
+    <string name="attraction_name">Attraction name:</string>
+    <string name="attraction_location">Attraction location:</string>
+    <string name="attraction_description">Attraction description:</string>
+    <string name="attraction_price">Attraction price:</string>
+    <string name="finish">Finish</string>
+
+</resources>
