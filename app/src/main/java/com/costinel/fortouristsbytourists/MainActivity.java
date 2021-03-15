@@ -51,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
         // linking the recyclerView field to the recyclerView from the main activity;
         mRecyclerView = findViewById(R.id.recycle_view_main);
+
         // setting the recyclerView as fixed;
         mRecyclerView.setHasFixedSize(true);
+
         // setting a new Layout manager for this context;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -84,5 +86,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
