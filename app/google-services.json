@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:603338028904:android:c142a19c0e7e01e56088dd",
+        "mobilesdk_app_id": "1:603338028904:android:b41c803c9a2f31296088dd",
         "android_client_info": {
           "package_name": "com.costinel.fortouristsbytourists"
         }
       },
       "oauth_client": [
         {
-          "client_id": "603338028904-ggn7s11q593bi3qgshlpgerkldk18qcs.apps.googleusercontent.com",
+          "client_id": "603338028904-11aekcjcblgb6blvkhsdajh8jtq6s4po.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.costinel.fortouristsbytourists",
-            "certificate_hash": "453b2c9ea1e3efee60743fa73ea3a2fe6f75b2e4"
+            "certificate_hash": "cda770e080d01fad1e7a21a869847abf59344031"
           }
         },
         {

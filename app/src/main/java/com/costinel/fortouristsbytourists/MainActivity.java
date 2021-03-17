@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
-    private DatabaseReference mDatabaseRef;
     private List<Upload> mUploads;
 
     // creating the impostor for the login button in the activity layout;
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         mUploads = new ArrayList<>();
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("attractions");
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("attractions");
 
         // creating an addValueEventListener to the database reference to extract the data from
         // the mUploads ArrayList using the dataSnapshot;
