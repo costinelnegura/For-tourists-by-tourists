@@ -5,15 +5,17 @@ public class Users {
     String lastName;
     String password;
     String email;
+    String mAvatarUrl;
 
     // making an User class to create user objects to push user information to Firebase,
     // and therefore allowing users to log in;
     // this constructor will be used to write data to firebase;
-    public Users(String firstName, String lastName, String password, String email) {
+    public Users(String firstName, String lastName, String password, String email, String avatar) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
+        this.mAvatarUrl = avatar;
     }
 
     // empty constructor to be used to read the data from firebase;
@@ -50,5 +52,13 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getmAvatarUrl() {
+        return mAvatarUrl;
+    }
+
+    public void setmAvatarUrl(String mAvatarUrl) {
+        this.mAvatarUrl = mAvatarUrl;
     }
 }

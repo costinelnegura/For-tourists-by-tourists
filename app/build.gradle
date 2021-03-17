@@ -42,11 +42,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:18.0.2'
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.firebaseui:firebase-ui-database:2.2.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:30.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:30.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.android.support:appcompat-v7'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:30.0.0'
     //noinspection GradleDynamicVersion
     testImplementation 'junit:junit:4+'
