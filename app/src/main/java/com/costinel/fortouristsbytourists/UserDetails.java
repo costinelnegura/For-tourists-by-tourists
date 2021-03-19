@@ -1,5 +1,6 @@
 package com.costinel.fortouristsbytourists;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,33 +9,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.costinel.fortouristsbytourists.Model.Users;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class UserDetails extends AppCompatActivity {
 
-
-    private FirebaseDatabase database;
     private DatabaseReference mDatabaseRef;
-
-    private static final String USER = "user";
 
     // creating the impostors
     private Button cancel, update;
     private TextView userFirstName, userLastName, userEmail;
     private ImageView userAvatar;
 
-    
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
-
-        // creating an instance of FirebaseDatabase with the reference to the USER node;
-//        database = FirebaseDatabase.getInstance().getReference("user"+);
-//        mDatabaseRef = database.getReference(USER);
 
         // linking the impostors with the buttons, text views and image views in the activity layout
         cancel = findViewById(R.id.cancel_update_user_details_bt);
@@ -45,23 +41,33 @@ public class UserDetails extends AppCompatActivity {
         userAvatar = findViewById(R.id.user_avatar_img);
 
         String userKey = getIntent().getStringExtra("user_key");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("user/" + userKey);
-        Users user = new Users();
-        mDatabaseRef.child(userKey).setValue(user);
 
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("user");
 
-        //Receiving the user information parsed from the main_activity_logged_in activity
-        String mUserAvatar = user.getmAvatarUrl();
-        String mUserFirstName = user.getFirstName();
-        String mUserLastName = user.getLastName();
-        String mUserEmail = user.getEmail();
+        List<Users> user;
 
-        Picasso.get().load(mUserAvatar).into(userAvatar);
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnapShop : snapshot.getChildren()){
+                    Users user = postSnapShop.getValue(Users.class);
+                    Picasso.get().load(user.getmAvatarUrl()).into(userAvatar);
+                    String mUserFirstName = user.getFirstName();
+                    String mUserLastName = user.getLastName();
+                    String mUserEmail = user.getEmail();
+                    String mUserAvatar = user.getmAvatarUrl();
 
-        //will display the actual information as a hist, so the user can tap the text box and
-        // type new information.
-        userFirstName.setHint(mUserFirstName);
-        userLastName.setHint(mUserLastName);
-        userEmail.setHint(mUserEmail);
+                    userFirstName.setHint(mUserFirstName);
+                    userLastName.setHint(mUserLastName);
+                    userEmail.setHint(mUserEmail);
+                    Picasso.get().load(mUserAvatar).into(userAvatar);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
