@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ForTouristsByTourists">
-        <activity android:name=".AttractionDetails"/>
+        <activity android:name=".UserDetails"></activity>
+        <activity android:name=".AttractionDetails" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity_logged_in" />
         <activity android:name=".Register" />

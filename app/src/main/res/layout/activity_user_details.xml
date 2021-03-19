@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserDetails">
+
+    <ImageView
+        android:id="@+id/user_avatar_img"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@id/user_first_name_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_first_name_txt"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:hint=""
+        app:layout_constraintBottom_toTopOf="@id/user_last_name_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="325dp" />
+
+    <TextView
+        android:id="@+id/user_last_name_txt"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:hint=""
+        app:layout_constraintBottom_toTopOf="@id/user_email_txt"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="325dp" />
+
+
+    <TextView
+        android:id="@+id/user_email_txt"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="200dp"
+        android:hint=""
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_last_name_txt"
+        app:layout_constraintTop_toTopOf="@id/user_last_name_txt" />
+
+    <Button
+        android:id="@+id/update_user_details_bt"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:text="@string/update_user_details"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_email_txt"
+        app:layout_constraintVertical_bias="0.959"
+        />
+
+    <Button
+        android:id="@+id/cancel_update_user_details_bt"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/update_user_details_bt" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

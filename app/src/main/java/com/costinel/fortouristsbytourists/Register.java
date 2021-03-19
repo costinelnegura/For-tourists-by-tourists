@@ -217,6 +217,11 @@ public class Register extends AppCompatActivity {
         String keyID = mDatabase.push().getKey();
         mDatabase.child(keyID).setValue(user);
         Intent loginIntent = new Intent(this, MainActivity_logged_in.class);
+//        loginIntent.putExtra("user_avatar", user.getmAvatarUrl());
+//        loginIntent.putExtra("user_first_name", user.getFirstName());
+//        loginIntent.putExtra("user_last_name", user.getLastName());
+//        loginIntent.putExtra("user_email", user.getEmail());
+        loginIntent.putExtra("user_key", keyID);
         startActivity(loginIntent);
     }
 }

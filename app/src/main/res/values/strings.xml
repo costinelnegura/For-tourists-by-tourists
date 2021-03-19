@@ -21,5 +21,6 @@
     <string name="attraction_description">Attraction description:</string>
     <string name="attraction_price">Attraction price:</string>
     <string name="finish">Finish</string>
+    <string name="update_user_details">Update</string>
 
 </resources>
