@@ -25,6 +25,8 @@ public class UserDetails extends AppCompatActivity {
     private TextView userFirstName, userLastName, userEmail;
     private ImageView userAvatar;
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
