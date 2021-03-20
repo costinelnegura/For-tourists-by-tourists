@@ -1,4 +1,5 @@
 package com.costinel.fortouristsbytourists;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,8 @@ import com.costinel.fortouristsbytourists.Model.Upload;
 import com.costinel.fortouristsbytourists.Model.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,10 +31,13 @@ import java.util.List;
 
 public class MainActivity_logged_in extends AppCompatActivity {
 
+    private static final String TAG = "User Data";
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
     private DatabaseReference mDatabaseRef;
     private List<Upload> mUploads;
+
+    private Users user;
 
     // creating the impostors for the buttons from the activity layout;
     Button logout, create_attraction;
@@ -70,26 +76,27 @@ public class MainActivity_logged_in extends AppCompatActivity {
             }
         });
 
-        String userKey = getIntent().getStringExtra("user_key");
+        String userUid = getIntent().getStringExtra("UID");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("user");
-
-        List<Users> user;
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("user/" + userUid);
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot postSnapShop : snapshot.getChildren()){
-                    Users user = postSnapShop.getValue(Users.class);
-                    Picasso.get().load(user.getmAvatarUrl()).into(userAvatar);
-                }
+                user = snapshot.getValue(Users.class);
+                Picasso.get().load(user.getmAvatarUrl()).into(userAvatar);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+                Log.d(TAG, "error retrieving data");
             }
         });
+
+
+
+
 
         // creating an onClickListener for the userAvatar ImageView to allow the user to
         // view details about his account;
@@ -99,7 +106,7 @@ public class MainActivity_logged_in extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity_logged_in.this, UserDetails.class);
-                i.putExtra("user_key", userKey);
+                i.putExtra("UID", userUid);
                 startActivity(i);
             }
         });

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.costinel.fortouristsbytourists.Model.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -60,6 +61,7 @@ public class Register extends AppCompatActivity {
 
     // creating a Register method which will be called to register the user to Firebase;
     public Register() {
+
     }
 
     @Override
@@ -210,16 +212,26 @@ public class Register extends AppCompatActivity {
     }
 
     public void updateUI(FirebaseUser currentUser) {
-
-        // keyID will become the key for each user generated;
-        String keyID = mDatabase.push().getKey();
-        mDatabase.child(keyID).setValue(user);
+        mDatabase.child(currentUser.getUid()).setValue(user);
         Intent loginIntent = new Intent(this, MainActivity_logged_in.class);
-//        loginIntent.putExtra("user_avatar", user.getmAvatarUrl());
-//        loginIntent.putExtra("user_first_name", user.getFirstName());
-//        loginIntent.putExtra("user_last_name", user.getLastName());
-//        loginIntent.putExtra("user_email", user.getEmail());
-        loginIntent.putExtra("user_key", keyID);
+
+//        mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(
+//                new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        loginIntent.putExtra("UID", currentUser.getUid());
+//                        startActivity(loginIntent);
+//                        Log.d(TAG, "registered and logged in");
+//                    }
+//                }
+//        ).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d(TAG, "error registering and logging in");
+//            }
+//        });
+
+        loginIntent.putExtra("UID", currentUser.getUid());
         startActivity(loginIntent);
     }
 }
