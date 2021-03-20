@@ -46,13 +46,11 @@ public class UserDetails extends AppCompatActivity {
     private TextView userFirstName, userLastName, userEmail;
     private ImageView userAvatar;
 
-
     private Uri avatarImageURI;
 
     private Users user;
 
     private String key;
-
 
     private StorageTask mAvatarStorageTask;
 
@@ -131,19 +129,19 @@ public class UserDetails extends AppCompatActivity {
 
                 mAvatarStorageTask = fileReference.putFile(avatarImageURI).
                         addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                        while (!urlTask.isSuccessful()) ;
-                        Uri downloadUrl = urlTask.getResult();
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!urlTask.isSuccessful()) ;
+                                Uri downloadUrl = urlTask.getResult();
 
-                        //this updates the user info using the user key
-                        user = new Users(userFirstName.getText().toString(), userFirstName.getText().toString(),
-                                user.getPassword(), userEmail.getText().toString(), downloadUrl.toString());
+                                //this updates the user info using the user key
+                                user = new Users(userFirstName.getText().toString(), userFirstName.getText().toString(),
+                                        user.getPassword(), userEmail.getText().toString(), downloadUrl.toString());
 
-                        mDatabaseRef.child(key).setValue(user);
-                    }
-                });
+                                mDatabaseRef.child(key).setValue(user);
+                            }
+                        });
             }
         });
 //        Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
@@ -168,7 +166,6 @@ public class UserDetails extends AppCompatActivity {
         }
     }
 
-
     // this method returns the extension of the image file that was selected;
     // ex: an image.jpg, the method wil return "jpg";
     private String getFileExtension(Uri uri) {
@@ -176,5 +173,4 @@ public class UserDetails extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
-
 }

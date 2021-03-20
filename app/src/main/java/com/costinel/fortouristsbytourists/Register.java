@@ -178,7 +178,6 @@ public class Register extends AppCompatActivity {
         }
     }
 
-
     // this method returns the extension of the image file that was selected;
     // ex: an image.jpg, the method wil return "jpg";
     private String getFileExtension(Uri uri) {
@@ -186,7 +185,6 @@ public class Register extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
-
 
     public void registerUser(String email, String password) {
 
