@@ -94,10 +94,6 @@ public class MainActivity_logged_in extends AppCompatActivity {
             }
         });
 
-
-
-
-
         // creating an onClickListener for the userAvatar ImageView to allow the user to
         // view details about his account;
         // the user will be sent to the activity_user_details activity layout;

@@ -34,18 +34,26 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="325dp" />
 
-
     <EditText
         android:id="@+id/user_email_txt"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="200dp"
-        android:inputType="text"
+        android:layout_marginTop="40dp"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@id/user_password_txt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="325dp" />
+
+    <EditText
+        android:id="@+id/user_password_txt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_last_name_txt"
-        app:layout_constraintTop_toTopOf="@id/user_last_name_txt" />
+        app:layout_constraintTop_toBottomOf="@id/user_email_txt" />
 
     <Button
         android:id="@+id/update_user_details_bt"
@@ -56,7 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.056"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_email_txt"
         app:layout_constraintVertical_bias="0.959"
         />
 

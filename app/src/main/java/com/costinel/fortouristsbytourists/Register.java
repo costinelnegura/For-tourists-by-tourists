@@ -59,11 +59,6 @@ public class Register extends AppCompatActivity {
     Button login, cancel, register;
     ImageView choose_avatar_img;
 
-    // creating a Register method which will be called to register the user to Firebase;
-    public Register() {
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,23 +209,6 @@ public class Register extends AppCompatActivity {
     public void updateUI(FirebaseUser currentUser) {
         mDatabase.child(currentUser.getUid()).setValue(user);
         Intent loginIntent = new Intent(this, MainActivity_logged_in.class);
-
-//        mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(
-//                new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        loginIntent.putExtra("UID", currentUser.getUid());
-//                        startActivity(loginIntent);
-//                        Log.d(TAG, "registered and logged in");
-//                    }
-//                }
-//        ).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d(TAG, "error registering and logging in");
-//            }
-//        });
-
         loginIntent.putExtra("UID", currentUser.getUid());
         startActivity(loginIntent);
     }

@@ -23,7 +23,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,17 +45,19 @@ public class UserDetails extends AppCompatActivity {
 
     // creating the impostors
     private Button cancel, update;
-    private TextView userFirstName, userLastName, userEmail;
+    private TextView userFirstName, userLastName, userEmail, userPassword;
     private ImageView userAvatar;
 
     private Uri avatarImageURI;
 
     private Users user;
 
-    private String key;
     private String mUserAvatar;
 
     private StorageTask mAvatarStorageTask;
+
+
+    private String[] tempAvatar = new String[1];
 
 
     @Override
@@ -70,14 +71,18 @@ public class UserDetails extends AppCompatActivity {
         userFirstName = findViewById(R.id.user_first_name_txt);
         userLastName = findViewById(R.id.user_last_name_txt);
         userEmail = findViewById(R.id.user_email_txt);
+        userPassword = findViewById(R.id.user_password_txt);
         userAvatar = findViewById(R.id.user_avatar_img);
 
-
+        // this will receive the user id
         String userUid = getIntent().getStringExtra("UID");
 
+        //creating instances of both database and storage pointing to the correct nodes
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("user/" + userUid);
         mStorageRef = FirebaseStorage.getInstance().getReference("images/avatar");
 
+        //this is an event listener that returned the data from the node where mData ref is pointing
+        //in this case it;s pointing to the logged in user node by using his user identifier.
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,11 +91,13 @@ public class UserDetails extends AppCompatActivity {
                 String mUserFirstName = user.getFirstName();
                 String mUserLastName = user.getLastName();
                 String mUserEmail = user.getEmail();
+                String mUserPassword = user.getPassword();
                 mUserAvatar = user.getmAvatarUrl();
 
                 userFirstName.setText(mUserFirstName);
                 userLastName.setText(mUserLastName);
                 userEmail.setText(mUserEmail);
+                userPassword.setText(mUserPassword);
                 Picasso.get().load(user.getmAvatarUrl()).into(userAvatar);
             }
 
@@ -101,7 +108,7 @@ public class UserDetails extends AppCompatActivity {
             }
         });
 
-
+        //this opens the image picker once the avatar is taped
         userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,84 +126,110 @@ public class UserDetails extends AppCompatActivity {
         });
 
         update.setOnClickListener(new View.OnClickListener() {
+
+            String url = null;
             @Override
             public void onClick(View v) {
+                if (avatarImageURI == null) {
+                  updateUser(user.getmAvatarUrl());
+                } else {
 
-                StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                        + "." + getFileExtension(avatarImageURI));
+                    StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                            + "." + getFileExtension(avatarImageURI));
 
-                mAvatarStorageTask = fileReference.putFile(avatarImageURI).
-                        addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while (!urlTask.isSuccessful()) ;
-                                Uri downloadUrl = urlTask.getResult();
-
-                                //Updating the user email
-                                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-                                AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getPassword());
-
-                                    firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Log.d(TAG, "User re-authenticated");
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d(TAG, "User not re-authenticated");
-                                        }
-                                    });
-
-                                firebaseUser.updateEmail(userEmail.getText().toString()).
-                                            addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                Log.d(TAG, "User email updated");
-                                            }
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d(TAG, "Error updating user email!");
-                                        }
-                                    });
-
-                                //if the avatar if url in not null
-                                if (downloadUrl != null) {
-                                    //create new user object
-                                    user = new Users(userFirstName.getText().toString(), userFirstName.getText().toString(),
-                                            user.getPassword(), userEmail.getText().toString(), downloadUrl.toString());
+                    mAvatarStorageTask = fileReference.putFile(avatarImageURI).
+                            addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                                    while (!urlTask.isSuccessful()) ;
+                                    Uri downloadUrl = urlTask.getResult();
+                                    updateUser(downloadUrl.toString());
                                 }
-
-                                //updating the current user pushing a new user object with the updated fields
-                                mDatabaseRef.setValue(user);
-
-
-                                //this section deleted the old avatar file from Firebase Storage
-                                mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mUserAvatar);
-                                mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "onSuccess: deleted old avatar");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure: did not delete the old avatar");
-                                    }
-                                });
-                            }
-                        });
+                            });
+                }
                 Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
                 i.putExtra("UID", userUid);
                 startActivity(i);
             }
         });
     }
+
+    private void updateUser(String url){
+        //Updating the user email
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getPassword());
+
+        firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "User re-authenticated");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "User not re-authenticated");
+            }
+        });
+
+        firebaseUser.updateEmail(userEmail.getText().toString()).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User email updated");
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Error updating user email!");
+            }
+        });
+
+        //this section will update the password of the user in Firebase Auth
+        firebaseUser.updatePassword(userPassword.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "password changed successfully");
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "password not changed");
+            }
+        });
+
+        //create new user object
+        Users user1 = new Users(userFirstName.getText().toString(),
+                userLastName.getText().toString(),
+                userPassword.getText().toString(),
+                userEmail.getText().toString(),
+                url);
+
+
+        //updating the current user pushing a new user object with the updated fields
+        mDatabaseRef.setValue(user1);
+
+        //this section deleted the old avatar file from Firebase Storage
+        mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mUserAvatar);
+        mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: deleted old avatar");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: did not delete the old avatar");
+            }
+        });
+    }
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
