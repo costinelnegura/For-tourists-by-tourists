@@ -11,7 +11,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ForTouristsByTourists">
-        <activity android:name=".UserDetails"></activity>
+        <activity android:name=".ConfirmPassword">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="for-tourists-by-tourists-2e3f4.firebaseapp.com"
+                    android:scheme="http" />
+                <data
+                    android:host="for-tourists-by-tourists-2e3f4.firebaseapp.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ResetPassword" />
+        <activity android:name=".UserDetails" />
         <activity android:name=".AttractionDetails" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity_logged_in" />

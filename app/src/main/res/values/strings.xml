@@ -22,5 +22,14 @@
     <string name="attraction_price">Attraction price:</string>
     <string name="finish">Finish</string>
     <string name="update_user_details">Update</string>
+    <string name="forgot_password">Forgot password | Reset password</string>
+    <string name="request_reset_password">Request reset password</string>
+    <string name="reset_password">Reset password</string>
+    <string name="reset_password_instructions">If the provided email address was previously used to log in
+        the app, you will receive an email with instructions to reset the password.</string>
+    <string name="type_new_password">Type new password…</string>
+    <string name="retype_new_password">Retype new password…</string>
+    <string name="type_your_new_password">Type your new password</string>
+
 
 </resources>

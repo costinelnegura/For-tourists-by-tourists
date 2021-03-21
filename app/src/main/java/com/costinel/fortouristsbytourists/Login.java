@@ -9,6 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,7 @@ public class Login extends AppCompatActivity {
     // creating the impostors for the activity layout;
     Button login, cancel, register;
     EditText email_edit_text, password_edit_text;
+    TextView forgot_password;
 
     // creating a Firebase auth reference;
     private FirebaseAuth auth;
@@ -37,7 +39,11 @@ public class Login extends AppCompatActivity {
         register = findViewById(R.id.bt_register_2);
         email_edit_text = findViewById(R.id.txt_email_address);
         password_edit_text = findViewById(R.id.txt_password);
+        forgot_password = findViewById(R.id.forgot_password_txt);
         auth = FirebaseAuth.getInstance();
+
+        String intent_email = getIntent().getStringExtra("email");
+        String intent_password = getIntent().getStringExtra("password");
 
         // creating a onClickListener for the login button impostor;
         login.setOnClickListener(new View.OnClickListener() {
@@ -47,8 +53,18 @@ public class Login extends AppCompatActivity {
 
                 // creating 2 string variables to save the input from the user from the
                 // activity layout;
-                String email =  email_edit_text.getText().toString().trim();
-                String password = password_edit_text.getText().toString().trim();
+
+                String email, password;
+
+                //if this activity is reached from opening the app manually, email and password text boxes
+                // are filled with user input, else with user details from the password recovery process.
+//                if(!intent_email.isEmpty() && !intent_password.isEmpty()){
+//                    email = intent_email;
+//                    password = intent_password;
+//                }else {
+                    email = email_edit_text.getText().toString().trim();
+                    password = password_edit_text.getText().toString().trim();
+//                }
 
                 // checking if the user typed both email or password;
                 // prompting if something is not typed;
@@ -114,6 +130,14 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 Intent register = new Intent(Login.this, Register.class);
                 startActivity(register);
+            }
+        });
+
+        forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Login.this, ResetPassword.class);
+                startActivity(i);
             }
         });
     }
