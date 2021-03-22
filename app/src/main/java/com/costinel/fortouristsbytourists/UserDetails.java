@@ -13,6 +13,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.costinel.fortouristsbytourists.Model.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,8 +45,8 @@ public class UserDetails extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     // creating the impostors
-    private Button cancel, update;
-    private TextView userFirstName, userLastName, userEmail, userPassword;
+    private Button cancel, update, resetPassword;
+    private TextView userFirstName, userLastName, userEmail, confirmationPassword;
     private ImageView userAvatar;
 
     private Uri avatarImageURI;
@@ -53,6 +54,7 @@ public class UserDetails extends AppCompatActivity {
     private Users user;
 
     private String mUserAvatar;
+    private String tempPassword;
 
     private StorageTask mAvatarStorageTask;
 
@@ -71,7 +73,8 @@ public class UserDetails extends AppCompatActivity {
         userFirstName = findViewById(R.id.user_first_name_txt);
         userLastName = findViewById(R.id.user_last_name_txt);
         userEmail = findViewById(R.id.user_email_txt);
-        userPassword = findViewById(R.id.user_password_txt);
+        confirmationPassword = findViewById(R.id.txt_confirmation_password);
+        resetPassword = findViewById(R.id.bt_reset_password);
         userAvatar = findViewById(R.id.user_avatar_img);
 
         // this will receive the user id
@@ -91,13 +94,12 @@ public class UserDetails extends AppCompatActivity {
                 String mUserFirstName = user.getFirstName();
                 String mUserLastName = user.getLastName();
                 String mUserEmail = user.getEmail();
-                String mUserPassword = user.getPassword();
                 mUserAvatar = user.getmAvatarUrl();
+
 
                 userFirstName.setText(mUserFirstName);
                 userLastName.setText(mUserLastName);
                 userEmail.setText(mUserEmail);
-                userPassword.setText(mUserPassword);
                 Picasso.get().load(user.getmAvatarUrl()).into(userAvatar);
             }
 
@@ -116,6 +118,13 @@ public class UserDetails extends AppCompatActivity {
             }
         });
 
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,9 +140,15 @@ public class UserDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (avatarImageURI == null) {
-                  updateUser(user.getmAvatarUrl());
-                } else {
+                    tempPassword = confirmationPassword.getText().toString();
+                    if(tempPassword.equals("")){
+                        Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
+                    }else{
+                        tempPassword = confirmationPassword.getText().toString();
+                        updateUser(user.getmAvatarUrl());
+                    }
 
+                } else {
                     StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                             + "." + getFileExtension(avatarImageURI));
 
@@ -144,22 +159,33 @@ public class UserDetails extends AppCompatActivity {
                                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                                     while (!urlTask.isSuccessful()) ;
                                     Uri downloadUrl = urlTask.getResult();
-                                    updateUser(downloadUrl.toString());
+                                    tempPassword = confirmationPassword.getText().toString();
+                                    if(tempPassword.equals("")){
+                                        Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
+
+                                    }else{
+                                        tempPassword = confirmationPassword.getText().toString();
+                                        updateUser(downloadUrl.toString());
+                                        Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
+                                        i.putExtra("UID", userUid);
+                                        startActivity(i);
+                                    }
+
                                 }
                             });
                 }
-                Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
-                i.putExtra("UID", userUid);
-                startActivity(i);
             }
         });
     }
 
     private void updateUser(String url){
+
+
+
         //Updating the user email
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getPassword());
+        AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), tempPassword);
 
         firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -188,32 +214,12 @@ public class UserDetails extends AppCompatActivity {
             }
         });
 
-        //this section will update the password of the user in Firebase Auth
-        firebaseUser.updatePassword(userPassword.getText().toString())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "password changed successfully");
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "password not changed");
-            }
-        });
 
-        //create new user object
-        Users user1 = new Users(userFirstName.getText().toString(),
-                userLastName.getText().toString(),
-                userPassword.getText().toString(),
-                userEmail.getText().toString(),
-                url);
+        mDatabaseRef.child("email").setValue(userEmail.getText().toString());
+        mDatabaseRef.child("firstName").setValue(userFirstName.getText().toString());
+        mDatabaseRef.child("lastName").setValue((userLastName.getText().toString()));
+        mDatabaseRef.child("mAvatarUrl").setValue(url);
 
-
-        //updating the current user pushing a new user object with the updated fields
-        mDatabaseRef.setValue(user1);
 
         //this section deleted the old avatar file from Firebase Storage
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mUserAvatar);

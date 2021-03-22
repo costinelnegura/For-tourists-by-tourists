@@ -147,7 +147,7 @@ public class Register extends AppCompatActivity {
                                 String avatarUri = downloadUrl.toString();
 
                                 // creating a Users object containing all the data from the user;
-                                user = new Users(name, surname, password, email, avatarUri);
+                                user = new Users(name, surname, email, avatarUri);
 
                                 // calling the registerUser parsing both ehe email and password from the user;
                                 registerUser(email, password);

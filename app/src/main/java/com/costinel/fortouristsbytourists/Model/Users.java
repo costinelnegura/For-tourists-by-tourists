@@ -3,17 +3,16 @@ package com.costinel.fortouristsbytourists.Model;
 public class Users {
     String firstName;
     String lastName;
-    String password;
     String email;
     String mAvatarUrl;
 
     // making an User class to create user objects to push user information to Firebase,
     // and therefore allowing users to log in;
     // this constructor will be used to write data to firebase;
-    public Users(String firstName, String lastName, String password, String email, String avatar) {
+    public Users(String firstName, String lastName, String email, String avatar) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
+
         this.email = email;
         this.mAvatarUrl = avatar;
     }
@@ -36,14 +35,6 @@ public class Users {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {

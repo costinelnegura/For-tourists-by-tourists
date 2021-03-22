@@ -3,7 +3,6 @@ package com.costinel.fortouristsbytourists;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ResetPassword extends AppCompatActivity {
 
+
     private Button resetPassword;
     private EditText emailAddress;
 
@@ -27,7 +27,7 @@ public class ResetPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        resetPassword = findViewById(R.id.bt_reset_password);
+        resetPassword = findViewById(R.id.bt_request_reset_password);
         emailAddress = findViewById(R.id.txt_email_address);
 
         resetPassword.setOnClickListener(new View.OnClickListener() {
@@ -38,8 +38,10 @@ public class ResetPassword extends AppCompatActivity {
                         new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getApplicationContext(), "email sent",
-                                        Toast.LENGTH_LONG).show();
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "email sent",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                 ).addOnFailureListener(new OnFailureListener() {
