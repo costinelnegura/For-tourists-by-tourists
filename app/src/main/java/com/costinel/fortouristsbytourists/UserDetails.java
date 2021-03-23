@@ -42,7 +42,6 @@ public class UserDetails extends AppCompatActivity {
 
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorageRef;
-    private FirebaseAuth mAuth;
 
     // creating the impostors
     private Button cancel, update, resetPassword;
@@ -50,6 +49,7 @@ public class UserDetails extends AppCompatActivity {
     private ImageView userAvatar;
 
     private Uri avatarImageURI;
+    private Uri downloadUrl;
 
     private Users user;
 
@@ -58,10 +58,6 @@ public class UserDetails extends AppCompatActivity {
     private String userUid;
 
     private StorageTask mAvatarStorageTask;
-
-
-    private String tempAvatar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,35 +147,24 @@ public class UserDetails extends AppCompatActivity {
                     }
 
                 } else {
-                    StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                            + "." + getFileExtension(avatarImageURI));
+                   storeNewAvatar();
+                }
 
-                    mAvatarStorageTask = fileReference.putFile(avatarImageURI).
-                            addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                    while (!urlTask.isSuccessful()) ;
-                                    Uri downloadUrl = urlTask.getResult();
-                                    tempPassword = confirmationPassword.getText().toString();
-                                    if (tempPassword.equals("")) {
-                                        Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
+                tempPassword = confirmationPassword.getText().toString();
+                if (tempPassword.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
 
-                                    } else {
-                                        tempPassword = confirmationPassword.getText().toString();
-                                        updateUser(downloadUrl.toString());
-                                        deleteOldAvatar();
-                                    }
-                                }
-                            });
+                } else {
+                    tempPassword = confirmationPassword.getText().toString();
+                    updateUser(downloadUrl.toString());
+                    deleteOldAvatar();
                 }
             }
         });
     }
 
     private void updateUser(String url) {
-
-
+        
         //Updating the user email
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -212,7 +197,6 @@ public class UserDetails extends AppCompatActivity {
             }
         });
 
-
         mDatabaseRef.child("email").setValue(userEmail.getText().toString());
         mDatabaseRef.child("firstName").setValue(userFirstName.getText().toString());
         mDatabaseRef.child("lastName").setValue((userLastName.getText().toString()));
@@ -239,6 +223,21 @@ public class UserDetails extends AppCompatActivity {
         });
     }
 
+    private void storeNewAvatar(){
+        StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                + "." + getFileExtension(avatarImageURI));
+
+        mAvatarStorageTask = fileReference.putFile(avatarImageURI).
+                addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!urlTask.isSuccessful()) ;
+                        downloadUrl = urlTask.getResult();
+                    }
+                });
+    }
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -253,10 +252,7 @@ public class UserDetails extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             avatarImageURI = data.getData();
-
             Picasso.get().load(avatarImageURI).into(userAvatar);
-
-
         }
     }
 
