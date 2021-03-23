@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.costinel.fortouristsbytourists.Model.Upload;
+import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
-    private List<Upload> mUploads;
+    private List<Attraction> mUploads;
 
     // creating the impostor for the login button in the activity layout;
     Button login;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
+                    Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
                 }
 

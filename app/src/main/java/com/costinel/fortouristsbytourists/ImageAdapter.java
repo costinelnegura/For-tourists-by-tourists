@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.costinel.fortouristsbytourists.Model.Upload;
+import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,13 +20,13 @@ import java.util.List;
 // recyclerView;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
-    private List<Upload> mUploads;
+    private List<Attraction> mUploads;
 
     // creating a method which will save the context and the the list of upload items;
     // context is important in this class because an ImageAdapter doesn't accept Intent which
     // will be used in an onClickListener to send the user from one activity layout to another,
     // by clicking an image from the recyclerView;
-    public ImageAdapter(Context context, List<Upload> uploads) {
+    public ImageAdapter(Context context, List<Attraction> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -43,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     // have the name and image of the attraction;
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        Upload uploadCurrent = mUploads.get(position);
+        Attraction uploadCurrent = mUploads.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())

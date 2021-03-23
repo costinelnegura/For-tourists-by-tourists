@@ -5,7 +5,7 @@ package com.costinel.fortouristsbytourists;
         import android.widget.ProgressBar;
         import android.widget.Toast;
 
-        import com.costinel.fortouristsbytourists.Model.Upload;
+        import com.costinel.fortouristsbytourists.Model.Attraction;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
         import com.google.firebase.database.DatabaseReference;
@@ -29,7 +29,7 @@ public class ImagesActivity extends AppCompatActivity {
     private ProgressBar mProgressCircle;
 
     private DatabaseReference mDatabaseRef;
-    private List<Upload> mUploads;
+    private List<Attraction> mUploads;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class ImagesActivity extends AppCompatActivity {
 
                 // using the for loop to go through all the children nodes from the attraction node;
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
+                    Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
                 }
 

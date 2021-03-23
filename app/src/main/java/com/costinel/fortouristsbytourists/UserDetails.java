@@ -164,7 +164,7 @@ public class UserDetails extends AppCompatActivity {
     }
 
     private void updateUser(String url) {
-        
+
         //Updating the user email
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 

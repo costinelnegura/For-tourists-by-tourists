@@ -13,12 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.costinel.fortouristsbytourists.Model.Upload;
+import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.costinel.fortouristsbytourists.Model.Users;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +31,7 @@ public class MainActivity_logged_in extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
     private DatabaseReference mDatabaseRef;
-    private List<Upload> mUploads;
+    private List<Attraction> mUploads;
 
     private Users user;
 
@@ -130,7 +126,7 @@ public class MainActivity_logged_in extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
+                    Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
                 }
 

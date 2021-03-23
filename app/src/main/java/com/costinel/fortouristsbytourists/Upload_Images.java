@@ -17,7 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.costinel.fortouristsbytourists.Model.Upload;
+import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +29,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Upload_Images extends AppCompatActivity {
 
@@ -52,6 +55,8 @@ public class Upload_Images extends AppCompatActivity {
 
     private StorageTask mUploadTask;
 
+    private Map<String, String> selectedImages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +79,9 @@ public class Upload_Images extends AppCompatActivity {
         // mDatabaseRef has the path to "attractions" because there are stored all the attractions
         // information;
         mStorageRef = FirebaseStorage.getInstance().getReference("images/attractions");
+        //mDatabaseRef as a reference of the attraction object
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("attractions");
+
 
         // creating an on click listener to mButtonChooseImage;
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
@@ -92,10 +99,16 @@ public class Upload_Images extends AppCompatActivity {
                 // to the user or otherwise uploading the image, which prevents the use to
                 // upload the same image multiple times;
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(Upload_Images.this, "Upload in progress",
+                    Toast.makeText(Upload_Images.this, "Upload in progress...",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    uploadFile();
+                    if (mImageUri != null) {
+                        uploadFile();
+                        Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
+                    }else{
+                        // if no file is selected, a message will let the user know;
+                        Toast.makeText(getApplicationContext(), "No image selected!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -147,7 +160,7 @@ public class Upload_Images extends AppCompatActivity {
 
     // creating the upload method which will upload the selected image to Firebase;
     private void uploadFile() {
-        if (mImageUri != null) {
+
             // creating another storage reference which is = to the one that points to the
             // upload path in Firebase, and its child will have the name formed of
             // the current time in milliseconds and then the file extension;
@@ -178,11 +191,13 @@ public class Upload_Images extends AppCompatActivity {
                             while (!urlTask.isSuccessful());
                             Uri downloadUrl = urlTask.getResult();
 
-                            Upload upload = new Upload(AttractionName.getText().toString().trim(),
-                                    downloadUrl.toString(),
+
+                            Attraction upload = new Attraction(AttractionName.getText().toString().trim(),
                                     AttractionLocation.getText().toString().trim(),
                                     AttractionDescription.getText().toString().trim(),
-                                    AttractionPrice.getText().toString().trim());
+                                    AttractionPrice.getText().toString().trim(),
+                                    selectedImages
+                            );
 
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
@@ -207,9 +222,5 @@ public class Upload_Images extends AppCompatActivity {
                             mProgressBar.setProgress((int) progress);
                         }
                     });
-        } else {
-            // if no file is selected, a message will let the user know;
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
-        }
     }
 }
