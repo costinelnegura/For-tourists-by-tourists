@@ -55,11 +55,12 @@ public class UserDetails extends AppCompatActivity {
 
     private String mUserAvatar;
     private String tempPassword;
+    private String userUid;
 
     private StorageTask mAvatarStorageTask;
 
 
-    private String[] tempAvatar = new String[1];
+    private String tempAvatar;
 
 
     @Override
@@ -78,7 +79,7 @@ public class UserDetails extends AppCompatActivity {
         userAvatar = findViewById(R.id.user_avatar_img);
 
         // this will receive the user id
-        String userUid = getIntent().getStringExtra("UID");
+        userUid = getIntent().getStringExtra("UID");
 
         //creating instances of both database and storage pointing to the correct nodes
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("user/" + userUid);
@@ -137,15 +138,16 @@ public class UserDetails extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
 
             String url = null;
+
             @Override
             public void onClick(View v) {
                 if (avatarImageURI == null) {
                     tempPassword = confirmationPassword.getText().toString();
-                    if(tempPassword.equals("")){
+                    if (tempPassword.equals("")) {
                         Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         tempPassword = confirmationPassword.getText().toString();
-                        updateUser(user.getmAvatarUrl());
+                        updateUser(mUserAvatar);
                     }
 
                 } else {
@@ -160,17 +162,14 @@ public class UserDetails extends AppCompatActivity {
                                     while (!urlTask.isSuccessful()) ;
                                     Uri downloadUrl = urlTask.getResult();
                                     tempPassword = confirmationPassword.getText().toString();
-                                    if(tempPassword.equals("")){
+                                    if (tempPassword.equals("")) {
                                         Toast.makeText(getApplicationContext(), "Type password to confirm!", Toast.LENGTH_LONG).show();
 
-                                    }else{
+                                    } else {
                                         tempPassword = confirmationPassword.getText().toString();
                                         updateUser(downloadUrl.toString());
-                                        Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
-                                        i.putExtra("UID", userUid);
-                                        startActivity(i);
+                                        deleteOldAvatar();
                                     }
-
                                 }
                             });
                 }
@@ -178,8 +177,7 @@ public class UserDetails extends AppCompatActivity {
         });
     }
 
-    private void updateUser(String url){
-
+    private void updateUser(String url) {
 
 
         //Updating the user email
@@ -220,7 +218,12 @@ public class UserDetails extends AppCompatActivity {
         mDatabaseRef.child("lastName").setValue((userLastName.getText().toString()));
         mDatabaseRef.child("mAvatarUrl").setValue(url);
 
+        Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
+        i.putExtra("UID", userUid);
+        startActivity(i);
+    }
 
+    public void deleteOldAvatar(){
         //this section deleted the old avatar file from Firebase Storage
         mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mUserAvatar);
         mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
