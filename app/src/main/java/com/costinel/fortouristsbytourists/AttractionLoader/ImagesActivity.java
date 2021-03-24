@@ -1,4 +1,4 @@
-package com.costinel.fortouristsbytourists;
+package com.costinel.fortouristsbytourists.AttractionLoader;
 
         import android.os.Bundle;
         import android.view.View;
@@ -6,6 +6,7 @@ package com.costinel.fortouristsbytourists;
         import android.widget.Toast;
 
         import com.costinel.fortouristsbytourists.Model.Attraction;
+        import com.costinel.fortouristsbytourists.R;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
         import com.google.firebase.database.DatabaseReference;

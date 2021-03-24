@@ -9,15 +9,19 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.costinel.fortouristsbytourists.AttractionLoader.ImageAdapter;
 import com.costinel.fortouristsbytourists.Model.Attraction;
+import com.costinel.fortouristsbytourists.SelectedImagesLoader.SelectedImageAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -28,10 +32,9 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Upload_Images extends AppCompatActivity {
 
@@ -43,11 +46,9 @@ public class Upload_Images extends AppCompatActivity {
     private Button mButtonUpload;
     private TextView Finish;
     private EditText AttractionName, AttractionLocation, AttractionDescription, AttractionPrice;
-    private ImageView mImageView;
+    private RecyclerView imageRecyclerView;
     private ProgressBar mProgressBar;
-
-    // creating a variable that will point to the selected image;
-    private Uri mImageUri;
+    private SelectedImageAdapter mAdapter;
 
     // creating the Firebase variables to connect the class to the storage and database.
     private StorageReference mStorageRef;
@@ -55,7 +56,8 @@ public class Upload_Images extends AppCompatActivity {
 
     private StorageTask mUploadTask;
 
-    private Map<String, String> selectedImages;
+    private List<Uri> selectedImages = new ArrayList<>();
+    private List<Uri> tempUri = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +66,15 @@ public class Upload_Images extends AppCompatActivity {
 
         // linking the impostors  to the ones on the activity layout;
         mButtonChooseImage = findViewById(R.id.button_choose_image);
-        mButtonUpload = findViewById(R.id.button_upload);
-        Finish = findViewById(R.id.text_finish);
+        mButtonUpload = findViewById(R.id.bt_create_attraction);
         AttractionName = findViewById(R.id.edit_attraction_name);
         AttractionLocation = findViewById(R.id.edit_attraction_location);
         AttractionDescription = findViewById(R.id.edit_attraction_description);
         AttractionPrice = findViewById(R.id.edit_attraction_price);
-        mImageView = findViewById(R.id.image_view);
+        imageRecyclerView = findViewById(R.id.recycle_view_upload_images);
         mProgressBar = findViewById(R.id.progress_bar);
+
+
 
         // designating the 2 variables to getInstance and getReference from Firebase;
         // mStorageRef has the patch "images/attractions" because there are stored all the
@@ -102,26 +105,14 @@ public class Upload_Images extends AppCompatActivity {
                     Toast.makeText(Upload_Images.this, "Upload in progress...",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    if (mImageUri != null) {
-                        uploadFile();
+                    if (!tempUri.isEmpty()) {
+                        uploadAttraction();
                         Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
                     }else{
                         // if no file is selected, a message will let the user know;
                         Toast.makeText(getApplicationContext(), "No image selected!", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
-        });
-
-        // creating an on click listener to Finish which will take the user to the main paged where
-        // he is logged in;
-        Finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Upload_Images.this,
-                        MainActivity_logged_in.class);
-                startActivity(i);
-//                openImagesActivity();
             }
         });
     }
@@ -144,10 +135,21 @@ public class Upload_Images extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            mImageUri = data.getData();
 
-            Picasso.get().load(mImageUri).into(mImageView);
+            //selected image is added to the List (ArrayList)
+            tempUri.add(data.getData());
+            createRecyclerView();
         }
+    }
+
+    public void createRecyclerView(){
+        imageRecyclerView.setHasFixedSize(true);
+        imageRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3,
+                LinearLayoutManager.VERTICAL, false));
+
+        //print selected image to the screen
+        mAdapter = new SelectedImageAdapter(Upload_Images.this, tempUri);
+        imageRecyclerView.setAdapter(mAdapter);
     }
 
     // this method returns the extension of the image file that was selected;
@@ -159,16 +161,15 @@ public class Upload_Images extends AppCompatActivity {
     }
 
     // creating the upload method which will upload the selected image to Firebase;
-    private void uploadFile() {
+    private void uploadImage(Uri imageUri) {
 
             // creating another storage reference which is = to the one that points to the
             // upload path in Firebase, and its child will have the name formed of
             // the current time in milliseconds and then the file extension;
-            // ex: 1606688319419.jpeg
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                    + "." + getFileExtension(mImageUri));
+            // ex: 1606688319419.img
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + ".img");
 
-            mUploadTask = fileReference.putFile(mImageUri)
+            mUploadTask = fileReference.putFile(imageUri)
                     // creating an onSuccess method which will upload the object created of the
                     // image selected and all the details tipped by the user to Firebase;
                     // this method resets the progress bar to 0 with a 500 milliseconds delay,
@@ -189,18 +190,7 @@ public class Upload_Images extends AppCompatActivity {
                             // is extracted from the taskSnapshot;
                             Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                             while (!urlTask.isSuccessful());
-                            Uri downloadUrl = urlTask.getResult();
-
-
-                            Attraction upload = new Attraction(AttractionName.getText().toString().trim(),
-                                    AttractionLocation.getText().toString().trim(),
-                                    AttractionDescription.getText().toString().trim(),
-                                    AttractionPrice.getText().toString().trim(),
-                                    selectedImages
-                            );
-
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+                            selectedImages.add(urlTask.getResult());
                         }
                     })
                     // creating an onFailure method to display an error message if the upload
@@ -222,5 +212,25 @@ public class Upload_Images extends AppCompatActivity {
                             mProgressBar.setProgress((int) progress);
                         }
                     });
+    }
+
+    private void uploadAttraction(){
+        for(int i=0; i<tempUri.size(); i++){
+            uploadImage(tempUri.get(i));
+        }
+
+        Attraction upload = new Attraction(AttractionName.getText().toString().trim(),
+                AttractionLocation.getText().toString().trim(),
+                AttractionDescription.getText().toString().trim(),
+                AttractionPrice.getText().toString().trim(),
+                selectedImages
+        );
+
+        String uploadId = mDatabaseRef.push().getKey();
+        mDatabaseRef.child(uploadId).setValue(upload);
+        for(int i=0; i<selectedImages.size(); i++){
+            mDatabaseRef.child(uploadId).child("imageUrl").
+                    child(System.currentTimeMillis() + ".image").setValue(upload.getAttractionImages().get(i));
+        }
     }
 }

@@ -1,8 +1,9 @@
-package com.costinel.fortouristsbytourists;
+package com.costinel.fortouristsbytourists.AttractionLoader;
 
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.costinel.fortouristsbytourists.AttractionDetails;
 import com.costinel.fortouristsbytourists.Model.Attraction;
+import com.costinel.fortouristsbytourists.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -43,14 +46,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     // have the name and image of the attraction;
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        Attraction uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getName());
-        Picasso.get()
-                .load(uploadCurrent.getImageUrl())
-                .placeholder(R.mipmap.ic_launcher)
-                .fit()
-                .centerCrop()
-                .into(holder.imageView);
+//        Attraction uploadCurrent = mUploads.get(position);
+//        holder.textViewName.setText(uploadCurrent.getName());
+//        Picasso.get()
+//                .load(uploadCurrent.getAttractionImages().get())
+//                .placeholder(R.mipmap.ic_launcher)
+//                .fit()
+//                .centerCrop()
+//                .into(holder.imageView);
 
         // this onClickListener will allow the user to click an image from the recyclerView;
         // to do this an intent will send the relevant data using "i.putExtra" to the
@@ -61,7 +64,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             public void onClick(View v) {
 
                 Intent i = new Intent(mContext, AttractionDetails.class);
-                i.putExtra("attraction_image_url", mUploads.get(position).getImageUrl());
+//                i.putExtra("attraction_image_map", mUploads.get(position).getAttractionImages().toString());
                 i.putExtra("attraction_name", mUploads.get(position).getName());
                 i.putExtra("attraction_location", mUploads.get(position).getnLocation());
                 i.putExtra("attraction_description", mUploads.get(position).

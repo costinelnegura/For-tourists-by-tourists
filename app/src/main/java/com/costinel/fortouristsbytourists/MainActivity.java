@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.costinel.fortouristsbytourists.AttractionLoader.ImageAdapter;
 import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

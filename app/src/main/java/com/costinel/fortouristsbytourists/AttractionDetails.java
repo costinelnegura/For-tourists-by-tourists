@@ -1,13 +1,19 @@
 package com.costinel.fortouristsbytourists;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Parcelable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttractionDetails extends AppCompatActivity {
 
@@ -32,13 +38,19 @@ public class AttractionDetails extends AppCompatActivity {
         String iLocation = getIntent().getStringExtra("attraction_location");
         String iDescription = getIntent().getStringExtra("attraction_description");
         String iPrice = getIntent().getStringExtra("attraction_price");
-        String url = getIntent().getStringExtra("attraction_image_url");
+        Intent intent = getIntent();
+        Map<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("attraction_image_map");
 
         // setting the values from the variables to the impostors;
         name.setText(iName);
         location.setText(iLocation);
         description.setText(iDescription);
         price.setText(iPrice);
-        Picasso.get().load(url).into(image);
+
+
+
+
+        //TO IMPLEMENT A RECYCLERVIEW
+        Picasso.get().load(map.get("1")).into(image);
     }
 }

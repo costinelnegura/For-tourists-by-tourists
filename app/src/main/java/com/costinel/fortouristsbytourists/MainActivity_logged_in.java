@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.costinel.fortouristsbytourists.AttractionLoader.ImageAdapter;
 import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.costinel.fortouristsbytourists.Model.Users;
 import com.google.firebase.database.DataSnapshot;

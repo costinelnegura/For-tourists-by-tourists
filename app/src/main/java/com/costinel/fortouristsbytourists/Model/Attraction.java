@@ -2,23 +2,25 @@ package com.costinel.fortouristsbytourists.Model;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Attraction {
     private String mName;
-//    private String mImageUrl;
+    private String mImageUrl;
     private String nLocation;
     private String nDescription;
     private String nPrice;
     //Using a Map interface to store multiple images for the upload attraction method.
-    private Map<String, String> attractionImages;
+    private List<Uri> attractionImages;
 
     // making an Upload class to create objects of attractions to upload to Firebase;
     // this constructor will be used to write data to firebase;
 
     public Attraction(String name, String location, String description,
-                      String price, Map<String, String> image) {
+                      String price, List<Uri> image) {
         if (name.trim().equals("")) {
             name = "No Name";
         }
@@ -34,7 +36,9 @@ public class Attraction {
         this.nLocation = location;
         this.nDescription = description;
         this.nPrice = price;
-        this.attractionImages = new HashMap<String, String>();
+        this.mImageUrl = "N/A";
+        this.attractionImages = new ArrayList<Uri>();
+
     }
 
     // empty constructor to be used to read the data from firebase;
@@ -51,13 +55,13 @@ public class Attraction {
         mName = name;
     }
 
-//    public String getImageUrl() {
-//        return mImageUrl;
-//    }
-//
-//    public void setImageUrl(String imageUrl) {
-//        mImageUrl = imageUrl;
-//    }
+    public String getImageUrl() {
+        return mImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        mImageUrl = imageUrl;
+    }
 
     public String getnLocation() {
         return nLocation;
@@ -83,11 +87,7 @@ public class Attraction {
         this.nPrice = nPrice;
     }
 
-    public Map<String, String> getAttractionImages() {
-        return new HashMap<String, String>(attractionImages);
+    public List<Uri> getAttractionImages() {
+        return new ArrayList<Uri>(attractionImages);
     }
-
-//    public void setAttractionImages(Map<String, String> attractionImages) {
-//
-//    }
 }
