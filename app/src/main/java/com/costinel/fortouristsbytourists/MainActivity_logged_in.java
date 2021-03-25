@@ -25,14 +25,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity_logged_in extends AppCompatActivity {
 
     private static final String TAG = "User Data";
+
     private RecyclerView mRecyclerView;
+
     private ImageAdapter mAdapter;
     private DatabaseReference mDatabaseRef;
+
     private List<Attraction> mUploads;
+    private List<String> thumbnails;
+//    private Map<String, String> imagesUrl;
+//    private String defaultImgKey;
 
     private Users user;
 
@@ -129,10 +136,26 @@ public class MainActivity_logged_in extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
+                    //getting the attraction ID
+                    String attractionID = postSnapshot.getKey();
+                    String imageID = postSnapshot.child(attractionID).child("images").getKey();
+                    //storing in an ArrayList only the first image as a thumbnail
+//                    thumbnails.add(postSnapshot.child(attractionID).child("images").child(imageID).getValue().toString());
                 }
 
+
+
+
+
+                //this will help to get the first key out of the images url map
+                //not important now that the order of the images is not maintained, can be amended
+                // with a LinkedHashMap if needed.
+//                Map.Entry<String, String> entry = imagesUrl.entrySet().iterator().next();
+//                defaultImgKey = entry.getKey();
+//
+
                 // creating a new image adapter for this context;
-                mAdapter = new ImageAdapter(MainActivity_logged_in.this, mUploads);
+                mAdapter = new ImageAdapter(MainActivity_logged_in.this, mUploads, thumbnails);
 
                 // setting the image adapter to the recyclerView;
                 mRecyclerView.setAdapter(mAdapter);

@@ -20,13 +20,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
-    private List<Attraction> mUploads;
+//    private List<Attraction> mUploads;
+    private List<String> thumbnails;
+//    private Map<String, String> imagesUrl;
+//    private String defaultImgKey;
 
     // creating the impostor for the login button in the activity layout;
     Button login;
@@ -58,25 +64,31 @@ public class MainActivity extends AppCompatActivity {
         // setting a new Layout manager for this context;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mUploads = new ArrayList<>();
+
+        List<String> attractionIDs = new ArrayList<>();
 
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("attractions");
 
         // creating an addValueEventListener to the database reference to extract the data from
         // the mUploads ArrayList using the dataSnapshot;
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
+
+                    List<Attraction> mUploads = new ArrayList<>();
+                    List<String> thumbnails = new ArrayList<>();
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
+                    String attractionID = postSnapshot.getKey();
+                    attractionIDs.add(attractionID);
+
+                    Iterator<DataSnapshot> iterator = dataSnapshot.child(attractionID).child("images").getChildren().iterator();
+                    String temp = iterator.next().getValue().toString();
+
+                    thumbnails.add(temp);
                 }
-
-                // creating a new image adapter for this context;
-                mAdapter = new ImageAdapter(MainActivity.this, mUploads);
-
-                // setting the adapter for the recyclerView;
-                mRecyclerView.setAdapter(mAdapter);
+                createRecyclerView(mUploads, thumbnails);
             }
 
             // this method will execute if there is an error while extracting the data;
@@ -85,5 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void createRecyclerView(List<Attraction> attractions, List<String> thumbnails){
+        // creating a new image adapter for this context;
+        mAdapter = new ImageAdapter(MainActivity.this, attractions, thumbnails);
+
+        // setting the adapter for the recyclerView;
+        mRecyclerView.setAdapter(mAdapter);
     }
 }

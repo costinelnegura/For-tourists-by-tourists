@@ -44,7 +44,6 @@ public class Upload_Images extends AppCompatActivity {
     // creating the impostors for the upload images activity layout;
     private Button mButtonChooseImage;
     private Button mButtonUpload;
-    private TextView Finish;
     private EditText AttractionName, AttractionLocation, AttractionDescription, AttractionPrice;
     private RecyclerView imageRecyclerView;
     private ProgressBar mProgressBar;
@@ -56,8 +55,12 @@ public class Upload_Images extends AppCompatActivity {
 
     private StorageTask mUploadTask;
 
-    private List<Uri> selectedImages = new ArrayList<>();
-    private List<Uri> tempUri = new ArrayList<>();
+    //List interface for an ArrayList to store the local stored url addresses of the images
+    private List<Uri> tempUri = new ArrayList<>(10);
+
+    //this stores the attraction id created once the upload button is pressed
+    private String uploadId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,6 @@ public class Upload_Images extends AppCompatActivity {
         AttractionPrice = findViewById(R.id.edit_attraction_price);
         imageRecyclerView = findViewById(R.id.recycle_view_upload_images);
         mProgressBar = findViewById(R.id.progress_bar);
-
 
 
         // designating the 2 variables to getInstance and getReference from Firebase;
@@ -107,8 +109,7 @@ public class Upload_Images extends AppCompatActivity {
                 } else {
                     if (!tempUri.isEmpty()) {
                         uploadAttraction();
-                        Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         // if no file is selected, a message will let the user know;
                         Toast.makeText(getApplicationContext(), "No image selected!", Toast.LENGTH_SHORT).show();
                     }
@@ -142,7 +143,9 @@ public class Upload_Images extends AppCompatActivity {
         }
     }
 
-    public void createRecyclerView(){
+    //method to create the recyclerview, by setting its layout grid and parsing the uri addresses
+    // to the adapter to be placed in the recyclerview
+    public void createRecyclerView() {
         imageRecyclerView.setHasFixedSize(true);
         imageRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3,
                 LinearLayoutManager.VERTICAL, false));
@@ -152,85 +155,56 @@ public class Upload_Images extends AppCompatActivity {
         imageRecyclerView.setAdapter(mAdapter);
     }
 
-    // this method returns the extension of the image file that was selected;
-    // ex: an image.jpg, the method wil return "jpg";
-    private String getFileExtension(Uri uri) {
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
+    // method to store the images which uri's are coming from an ArrayList, to firebase and use the
+    // url captured to create references in the created attraction
+    private void storeImage(Uri uri) {
+        // creating another storage reference which is = to the one that points to the
+        // upload path in Firebase, and its child will have the name formed of
+        // the current time in milliseconds and then the file extension;
+        // ex: 1606688319419.img
+        StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + ".img");
+
+        mUploadTask = fileReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // to obtain the correct URL from the uri, Task<> is used and the data
+                // is extracted from the taskSnapshot;
+                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!urlTask.isSuccessful()) ;
+                Uri uri = (urlTask.getResult());
+                mDatabaseRef.child(uploadId).child("images").child(System.currentTimeMillis() + "img")
+                        .setValue(uri.toString());
+            }
+        });
     }
 
-    // creating the upload method which will upload the selected image to Firebase;
-    private void uploadImage(Uri imageUri) {
+    // method to create the attraction with multiple images
+    private void uploadAttraction() {
+        if(AttractionName.getText().toString().trim().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Specify attraction name!", Toast.LENGTH_LONG).show();
+        }else if(AttractionLocation.getText().toString().trim().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Specify attraction location!", Toast.LENGTH_LONG).show();
+        }else if(AttractionDescription.getText().toString().trim().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Specify attraction description!", Toast.LENGTH_LONG).show();
+        }else if(AttractionPrice.getText().toString().trim().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Specify attraction price!", Toast.LENGTH_LONG).show();
+        }else if(tempUri.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Add image(s)!", Toast.LENGTH_LONG).show();
+        }else{
+            Attraction attraction = new Attraction(AttractionName.getText().toString().trim(),
+                    AttractionLocation.getText().toString().trim(),
+                    AttractionDescription.getText().toString().trim(),
+                    AttractionPrice.getText().toString().trim()
+            );
 
-            // creating another storage reference which is = to the one that points to the
-            // upload path in Firebase, and its child will have the name formed of
-            // the current time in milliseconds and then the file extension;
-            // ex: 1606688319419.img
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + ".img");
+            uploadId = mDatabaseRef.push().getKey();
+            mDatabaseRef.child(uploadId).setValue(attraction);
 
-            mUploadTask = fileReference.putFile(imageUri)
-                    // creating an onSuccess method which will upload the object created of the
-                    // image selected and all the details tipped by the user to Firebase;
-                    // this method resets the progress bar to 0 with a 500 milliseconds delay,
-                    // using a handler;
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setProgress(0);
-                                }
-                            }, 500);
-
-                            // to obtain the correct URL from the uri, Task<> is used and the data
-                            // is extracted from the taskSnapshot;
-                            Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while (!urlTask.isSuccessful());
-                            selectedImages.add(urlTask.getResult());
-                        }
-                    })
-                    // creating an onFailure method to display an error message if the upload
-                    // is not successful;
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Upload_Images.this, e.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    // the progress listener will update the progress bar on the upload_images
-                    // activity layer by extracting the data from the taskSnapshot;
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() /
-                                    taskSnapshot.getTotalByteCount());
-                            mProgressBar.setProgress((int) progress);
-                        }
-                    });
-    }
-
-    private void uploadAttraction(){
-        for(int i=0; i<tempUri.size(); i++){
-            uploadImage(tempUri.get(i));
-        }
-
-        Attraction upload = new Attraction(AttractionName.getText().toString().trim(),
-                AttractionLocation.getText().toString().trim(),
-                AttractionDescription.getText().toString().trim(),
-                AttractionPrice.getText().toString().trim(),
-                selectedImages
-        );
-
-        String uploadId = mDatabaseRef.push().getKey();
-        mDatabaseRef.child(uploadId).setValue(upload);
-        for(int i=0; i<selectedImages.size(); i++){
-            mDatabaseRef.child(uploadId).child("imageUrl").
-                    child(System.currentTimeMillis() + ".image").setValue(upload.getAttractionImages().get(i));
+            //this loop sends the local uri addresses from the ArrayList to the storeImage method
+            for (int i = 0; i < tempUri.size(); i++) {
+                storeImage(tempUri.get(i));
+            }
+            Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
         }
     }
 }

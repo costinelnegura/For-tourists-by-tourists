@@ -1,5 +1,6 @@
 package com.costinel.fortouristsbytourists.AttractionLoader;
 
+        import android.net.Uri;
         import android.os.Bundle;
         import android.view.View;
         import android.widget.ProgressBar;
@@ -20,8 +21,9 @@ package com.costinel.fortouristsbytourists.AttractionLoader;
 
         import java.util.ArrayList;
         import java.util.List;
+        import java.util.Map;
 
-        // creating ImagesActivity class to enable the app to access the data from the Firebase
+// creating ImagesActivity class to enable the app to access the data from the Firebase
         // database and show it in the recyclerView;
 public class ImagesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -31,6 +33,9 @@ public class ImagesActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabaseRef;
     private List<Attraction> mUploads;
+    private List<String> thumbnails;
+//    private Map<String, String> imagesUrl;
+//    private String defaultImgKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +68,15 @@ public class ImagesActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Attraction upload = postSnapshot.getValue(Attraction.class);
                     mUploads.add(upload);
+
+
                 }
 
+
+
+
                 // creating the image adapter;
-                mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
+                mAdapter = new ImageAdapter(ImagesActivity.this, mUploads, thumbnails);
 
                 // parsing the image adapter to the recyclerView and making the
                 // progress circle invisible;

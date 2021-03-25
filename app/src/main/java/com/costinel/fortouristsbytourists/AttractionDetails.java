@@ -38,8 +38,8 @@ public class AttractionDetails extends AppCompatActivity {
         String iLocation = getIntent().getStringExtra("attraction_location");
         String iDescription = getIntent().getStringExtra("attraction_description");
         String iPrice = getIntent().getStringExtra("attraction_price");
-        Intent intent = getIntent();
-        Map<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("attraction_image_map");
+        String iImage = getIntent().getStringExtra("attraction_image");
+
 
         // setting the values from the variables to the impostors;
         name.setText(iName);
@@ -51,6 +51,6 @@ public class AttractionDetails extends AppCompatActivity {
 
 
         //TO IMPLEMENT A RECYCLERVIEW
-        Picasso.get().load(map.get("1")).into(image);
+        Picasso.get().load(iImage).into(image);
     }
 }

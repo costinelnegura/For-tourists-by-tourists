@@ -1,44 +1,19 @@
 package com.costinel.fortouristsbytourists.Model;
 
-import android.net.Uri;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Attraction {
-    private String mName;
-    private String mImageUrl;
-    private String nLocation;
-    private String nDescription;
-    private String nPrice;
-    //Using a Map interface to store multiple images for the upload attraction method.
-    private List<Uri> attractionImages;
+    private String Name;
+    private String Location;
+    private String Description;
+    private String Price;
 
     // making an Upload class to create objects of attractions to upload to Firebase;
     // this constructor will be used to write data to firebase;
 
-    public Attraction(String name, String location, String description,
-                      String price, List<Uri> image) {
-        if (name.trim().equals("")) {
-            name = "No Name";
-        }
-        if (description.trim().equals("")){
-            description = "No Description";
-        }
-        if (price.trim().equals("")){
-            price = "Price unknown";
-        }
-
-
-        this.mName = name;
-        this.nLocation = location;
-        this.nDescription = description;
-        this.nPrice = price;
-        this.mImageUrl = "N/A";
-        this.attractionImages = new ArrayList<Uri>();
-
+    public Attraction(String name, String location, String description, String price) {
+        this.Name = name;
+        this.Location = location;
+        this.Description = description;
+        this.Price = price;
     }
 
     // empty constructor to be used to read the data from firebase;
@@ -46,48 +21,35 @@ public class Attraction {
 
     }
 
-
     public String getName() {
-        return mName;
+        return Name;
     }
 
     public void setName(String name) {
-        mName = name;
+        Name = name;
     }
 
-    public String getImageUrl() {
-        return mImageUrl;
+    public String getLocation() {
+        return Location;
     }
 
-    public void setImageUrl(String imageUrl) {
-        mImageUrl = imageUrl;
+    public void setLocation(String location) {
+        this.Location = location;
     }
 
-    public String getnLocation() {
-        return nLocation;
+    public String getDescription() {
+        return Description;
     }
 
-    public void setnLocation(String nLocation) {
-        this.nLocation = nLocation;
+    public void setDescription(String description) {
+        this.Description = description;
     }
 
-    public String getnDescription() {
-        return nDescription;
+    public String getPrice() {
+        return Price;
     }
 
-    public void setnDescription(String nDescription) {
-        this.nDescription = nDescription;
-    }
-
-    public String getnPrice() {
-        return nPrice;
-    }
-
-    public void setnPrice(String nPrice) {
-        this.nPrice = nPrice;
-    }
-
-    public List<Uri> getAttractionImages() {
-        return new ArrayList<Uri>(attractionImages);
+    public void setPrice(String price) {
+        this.Price = price;
     }
 }

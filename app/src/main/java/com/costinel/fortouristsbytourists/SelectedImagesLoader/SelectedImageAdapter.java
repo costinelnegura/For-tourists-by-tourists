@@ -71,15 +71,7 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         for(int i=0; i<localDataSet.size(); i++){
-            Uri url = localDataSet.get(i);
-
             viewHolder.imageView2.setImageURI(localDataSet.get(position));
-//            Picasso.get()
-//                    .load(url)
-//                    .placeholder(R.mipmap.ic_launcher)
-//                    .fit()
-//                    .centerCrop()
-//                    .into(viewHolder.imageView);
         }
     }
 

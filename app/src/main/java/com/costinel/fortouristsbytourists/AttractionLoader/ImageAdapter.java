@@ -3,7 +3,6 @@ package com.costinel.fortouristsbytourists.AttractionLoader;
 import android.content.Context;
 import android.content.Intent;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +17,25 @@ import com.costinel.fortouristsbytourists.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Map;
 
 // creating an ImageAdapter class which will play the role of a bridge between the data and the
 // recyclerView;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
     private List<Attraction> mUploads;
+    private List<String> thumbnails;
+//    private Map<String, String> imageUrl;
+//    private String defaultImgKey;
 
     // creating a method which will save the context and the the list of upload items;
     // context is important in this class because an ImageAdapter doesn't accept Intent which
     // will be used in an onClickListener to send the user from one activity layout to another,
     // by clicking an image from the recyclerView;
-    public ImageAdapter(Context context, List<Attraction> uploads) {
-        mContext = context;
-        mUploads = uploads;
+    public ImageAdapter(Context context, List<Attraction> uploads, List<String> thumbnails) {
+        this.mContext = context;
+        this.mUploads = uploads;
+        this.thumbnails = thumbnails;
     }
 
     // this method is used to return a viewHolder to the image_item activity layout;
@@ -46,14 +50,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     // have the name and image of the attraction;
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-//        Attraction uploadCurrent = mUploads.get(position);
-//        holder.textViewName.setText(uploadCurrent.getName());
-//        Picasso.get()
-//                .load(uploadCurrent.getAttractionImages().get())
-//                .placeholder(R.mipmap.ic_launcher)
-//                .fit()
-//                .centerCrop()
-//                .into(holder.imageView);
+
+        holder.textViewName.setText(mUploads.get(position).getName());
+        Picasso.get()
+                .load(thumbnails.get(position))
+                .placeholder(R.mipmap.ic_launcher)
+                .fit()
+                .centerCrop()
+                .into(holder.imageView);
 
         // this onClickListener will allow the user to click an image from the recyclerView;
         // to do this an intent will send the relevant data using "i.putExtra" to the
@@ -64,12 +68,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             public void onClick(View v) {
 
                 Intent i = new Intent(mContext, AttractionDetails.class);
-//                i.putExtra("attraction_image_map", mUploads.get(position).getAttractionImages().toString());
+                i.putExtra("attraction_image", thumbnails.get(position));
                 i.putExtra("attraction_name", mUploads.get(position).getName());
-                i.putExtra("attraction_location", mUploads.get(position).getnLocation());
+                i.putExtra("attraction_location", mUploads.get(position).getLocation());
                 i.putExtra("attraction_description", mUploads.get(position).
-                        getnDescription());
-                i.putExtra("attraction_price", mUploads.get(position).getnPrice());
+                        getDescription());
+                i.putExtra("attraction_price", mUploads.get(position).getPrice());
                 mContext.startActivity(i);
             }
         });
