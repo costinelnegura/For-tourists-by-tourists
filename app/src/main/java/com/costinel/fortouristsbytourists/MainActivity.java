@@ -47,10 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mAuth;
 
-    private  Map<Attraction, List<Uri>> attractions = new HashMap<>();
-
     private Users user;
     private String userUid;
+    private Attraction attraction;
 
     Boolean userLoginCheck = false;
 
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     create_attraction.setVisibility(View.INVISIBLE);
                     userAvatar.setVisibility(View.INVISIBLE);
                 }
-
             }
         });
 
@@ -128,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent image_upload = new Intent(MainActivity.this,
                         Upload_Images.class);
+                image_upload.putExtra("UID", userUid);
                 startActivity(image_upload);
             }
         });
@@ -145,9 +144,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        List<String> imagesKey = new ArrayList<>();
-
         // linking the recyclerView field to the recyclerview from the main activity layout where
         // the user is logged in;
         mRecyclerView = findViewById(R.id.recyclerView_logged_in);
@@ -161,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("attractions");
 
 
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("images/attractions");
-
+        List<Attraction> attractionList = new ArrayList<>();
+        List<List<Uri>> setOfImages = new ArrayList<>();
 
         // creating an addValueEventListener to extract the data from the Firebase attraction node;
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -174,30 +170,32 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
+                    attraction = postSnapshot.getValue(Attraction.class);
+                    attractionList.add(attraction);
 
-                    Attraction attraction = postSnapshot.getValue(Attraction.class);
 
                     String attractionID = postSnapshot.getKey();
 
-                    Iterator<DataSnapshot> iterator = dataSnapshot.child(attractionID).child("images").getChildren().iterator();
-                    while(iterator.hasNext()){
-                        imagesKey.add(iterator.next().getKey());
+
+                    List<Uri> imagesUrl = new ArrayList<>();
+                    for(DataSnapshot postSnapshot2 : dataSnapshot.child(attractionID).child("images").getChildren()){
+                        imagesUrl.add(Uri.parse(postSnapshot2.getValue().toString()));
                     }
 
-                    for(int i=0; i<imagesKey.size(); i++){
-                        storageReference.child("/1616778063655img").getDownloadUrl().addOnSuccessListener(
-                                new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        List<Uri> thumbnails = new ArrayList<>();
-                                        thumbnails.add(uri);
-                                        createRecyclerView(attraction, thumbnails);
-                                    }
-                                }
-                        );
+                    setOfImages.add(imagesUrl);
 
-                    }
+
+
+
+//                    Iterator<DataSnapshot> iterator = dataSnapshot.child(attractionID).child("images").getChildren().iterator();
+//                    while(iterator.hasNext()){
+//                        imagesUrl.add(Uri.parse(iterator.next().getValue().toString()));
+//
+//                    }
+
+
                 }
+                createRecyclerView(attractionList, setOfImages);
 
             }
 
@@ -211,11 +209,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void createRecyclerView(Attraction attraction, List<Uri> uri){
-
-        attractions.put(attraction, uri);
+    private void createRecyclerView(List<Attraction> attractionList, List<List<Uri>> setOfImages){
         // creating a new image adapter for this context;
-        mAdapter = new ImageAdapter(MainActivity.this, attractions);
+        mAdapter = new ImageAdapter(MainActivity.this, attractionList, setOfImages);
 
         // setting the adapter for the recyclerView;
         mRecyclerView.setAdapter(mAdapter);

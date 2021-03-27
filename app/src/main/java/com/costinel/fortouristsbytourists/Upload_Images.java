@@ -60,6 +60,7 @@ public class Upload_Images extends AppCompatActivity {
 
     //this stores the attraction id created once the upload button is pressed
     private String uploadId;
+    private String userUid;
 
 
     @Override
@@ -76,6 +77,9 @@ public class Upload_Images extends AppCompatActivity {
         AttractionPrice = findViewById(R.id.edit_attraction_price);
         imageRecyclerView = findViewById(R.id.recycle_view_upload_images);
         mProgressBar = findViewById(R.id.progress_bar);
+
+
+        userUid = getIntent().getStringExtra("UID");
 
 
         // designating the 2 variables to getInstance and getReference from Firebase;
@@ -207,6 +211,7 @@ public class Upload_Images extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(Upload_Images.this, MainActivity.class);
             i.putExtra("logged", true);
+            i.putExtra("UID", userUid);
             startActivity(i);
         }
     }

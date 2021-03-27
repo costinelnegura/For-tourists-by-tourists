@@ -22,10 +22,11 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
     private List<Uri> localDataSet;
     private Context mContext;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
+    public SelectedImageAdapter(Context context, List<Uri> dataSet) {
+        mContext = context;
+        localDataSet = dataSet;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView2;
 
@@ -39,18 +40,6 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
         public ImageView getImageView() {
             return imageView2;
         }
-    }
-
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet List<String> dataSet containing the data to populate views to be used
-     * by RecyclerView.
-     */
-    public SelectedImageAdapter(Context context, List<Uri> dataSet) {
-        mContext = context;
-        localDataSet = dataSet;
-
     }
 
     // Create new views (invoked by the layout manager)
@@ -67,9 +56,9 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        for(int i=0; i<localDataSet.size(); i++){
+//        for(int i=0; i<localDataSet.size(); i++){
             viewHolder.imageView2.setImageURI(localDataSet.get(position));
-        }
+//        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
