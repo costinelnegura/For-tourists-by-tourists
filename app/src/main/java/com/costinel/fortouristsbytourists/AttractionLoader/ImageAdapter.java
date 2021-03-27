@@ -3,6 +3,8 @@ package com.costinel.fortouristsbytourists.AttractionLoader;
 import android.content.Context;
 import android.content.Intent;
 
+import android.net.Uri;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.costinel.fortouristsbytourists.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,19 +28,16 @@ import java.util.Map;
 // recyclerView;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
-    private List<Attraction> mUploads;
-    private List<String> thumbnails;
-//    private Map<String, String> imageUrl;
-//    private String defaultImgKey;
+    private Map<Attraction, List<Uri>> attraction;
+    private AttractionDetails_ImageAdapter adapter;
 
     // creating a method which will save the context and the the list of upload items;
     // context is important in this class because an ImageAdapter doesn't accept Intent which
     // will be used in an onClickListener to send the user from one activity layout to another,
     // by clicking an image from the recyclerView;
-    public ImageAdapter(Context context, List<Attraction> uploads, List<String> thumbnails) {
+    public ImageAdapter(Context context, Map<Attraction, List<Uri>> attraction) {
         this.mContext = context;
-        this.mUploads = uploads;
-        this.thumbnails = thumbnails;
+        this.attraction = attraction;
     }
 
     // this method is used to return a viewHolder to the image_item activity layout;
@@ -51,9 +53,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
 
-        holder.textViewName.setText(mUploads.get(position).getName());
+        List<Attraction> tempAttraction = new ArrayList<>();
+        List<List<Uri>> tempImages = new ArrayList<>();
+
+        Iterator<Map.Entry<Attraction, List<Uri>>> entries = attraction.entrySet().iterator();
+        while(entries.hasNext()){
+            Map.Entry<Attraction, List<Uri>> entry = entries.next();
+            tempAttraction.add(entry.getKey());
+            tempImages.add(entry.getValue());
+        }
+
+        holder.textViewName.setText(tempAttraction.get(position).getName());
         Picasso.get()
-                .load(thumbnails.get(position))
+                .load(tempImages.get(position).get(0).toString())
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
                 .centerCrop()
@@ -66,15 +78,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent i = new Intent(mContext, AttractionDetails.class);
-                i.putExtra("attraction_image", thumbnails.get(position));
-                i.putExtra("attraction_name", mUploads.get(position).getName());
-                i.putExtra("attraction_location", mUploads.get(position).getLocation());
-                i.putExtra("attraction_description", mUploads.get(position).
-                        getDescription());
-                i.putExtra("attraction_price", mUploads.get(position).getPrice());
+                i.putExtra("name", tempAttraction.get(position).getName());
+                i.putExtra("location", tempAttraction.get(position).getLocation());
+                i.putExtra("description", tempAttraction.get(position).getDescription());
+                i.putExtra("price", tempAttraction.get(position).getPrice());
+                i.putExtra("images", (Serializable) tempImages.get(position));
                 mContext.startActivity(i);
+
             }
         });
     }
@@ -82,7 +93,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     // this method will get the size of the upload list which contains the attractions;
     @Override
     public int getItemCount() {
-        return mUploads.size();
+        return attraction.size();
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {

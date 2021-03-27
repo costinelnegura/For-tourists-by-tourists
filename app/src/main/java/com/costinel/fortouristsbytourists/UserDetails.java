@@ -125,8 +125,9 @@ public class UserDetails extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
+                Intent i = new Intent(UserDetails.this, MainActivity.class);
                 i.putExtra("UID", userUid);
+                i.putExtra("logged", true);
                 startActivity(i);
             }
         });
@@ -202,7 +203,7 @@ public class UserDetails extends AppCompatActivity {
         mDatabaseRef.child("lastName").setValue((userLastName.getText().toString()));
         mDatabaseRef.child("mAvatarUrl").setValue(url);
 
-        Intent i = new Intent(UserDetails.this, MainActivity_logged_in.class);
+        Intent i = new Intent(UserDetails.this, MainActivity.class);
         i.putExtra("UID", userUid);
         startActivity(i);
     }

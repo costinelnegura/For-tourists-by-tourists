@@ -15,9 +15,6 @@
         <activity android:name=".UserDetails" />
         <activity android:name=".AttractionDetails" />
         <activity android:name=".Login" />
-        <activity android:name=".MainActivity_logged_in" />
-        <activity android:name=".Register" />
-        <activity android:name=".Upload_Images" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Register" />
+        <activity android:name=".Upload_Images" />
         <activity android:name=".AttractionLoader.ImagesActivity" />
     </application>
 

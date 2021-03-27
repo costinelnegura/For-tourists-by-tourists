@@ -4,11 +4,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/attraction_details_image"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/img_attraction_images_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:contentDescription="TODO" />
+        android:layout_height="200dp"
+        />
 
     <TextView
         android:layout_width="match_parent"

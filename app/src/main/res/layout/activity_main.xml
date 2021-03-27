@@ -13,7 +13,7 @@
         android:layout_height="150dp"
         android:background="@drawable/home_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,7 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/title1"
             android:textColor="@color/white"
@@ -42,27 +41,46 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_search_attraction" />
 
         <Button
-            android:id="@+id/bt_login_main"
+            android:id="@+id/bt_login_logout_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/login"
             app:layout_constraintBottom_toBottomOf="@+id/txt_next_attraction"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txt_search_attraction"
-            app:layout_constraintVertical_bias="0.541" />
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/logged_in_user_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.782"
+            app:layout_constraintStart_toEndOf="@+id/bt_create_attraction"
+            app:layout_constraintTop_toBottomOf="@+id/bt_login_logout_main"
+            app:layout_constraintVertical_bias="0.555"
+            android:contentDescription="TODO" />
+
+        <Button
+            android:id="@+id/bt_create_attraction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/create_attraction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.052"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_next_attraction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view_main"
-        android:layout_width="0dp"
+        android:id="@+id/recyclerView_logged_in"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_bg"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/home_bg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

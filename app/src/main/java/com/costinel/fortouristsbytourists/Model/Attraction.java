@@ -1,5 +1,7 @@
 package com.costinel.fortouristsbytourists.Model;
 
+import java.util.List;
+
 public class Attraction {
     private String Name;
     private String Location;

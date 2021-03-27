@@ -99,10 +99,11 @@ public class Login extends AppCompatActivity {
                         if(task.isSuccessful()){
                             FirebaseUser userAuth = auth.getCurrentUser();
                             Intent i = new Intent(Login.this,
-                                    MainActivity_logged_in.class);
+                                    MainActivity.class);
                             if (userAuth != null) {
                                 i.putExtra("UID", userAuth.getUid());
                             }
+                            i.putExtra("logged", true);
                             startActivity(i);
                         }else{
                             Toast.makeText(getApplicationContext(), "Failed to login!",

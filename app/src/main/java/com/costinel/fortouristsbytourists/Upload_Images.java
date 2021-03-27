@@ -56,7 +56,7 @@ public class Upload_Images extends AppCompatActivity {
     private StorageTask mUploadTask;
 
     //List interface for an ArrayList to store the local stored url addresses of the images
-    private List<Uri> tempUri = new ArrayList<>(10);
+    private List<Uri> tempUri = new ArrayList<>();
 
     //this stores the attraction id created once the upload button is pressed
     private String uploadId;
@@ -205,6 +205,9 @@ public class Upload_Images extends AppCompatActivity {
                 storeImage(tempUri.get(i));
             }
             Toast.makeText(getApplicationContext(), "Attraction created!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(Upload_Images.this, MainActivity.class);
+            i.putExtra("logged", true);
+            startActivity(i);
         }
     }
 }

@@ -9,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.costinel.fortouristsbytourists.AttractionLoader.ImageAdapter;
-import com.costinel.fortouristsbytourists.Model.Attraction;
 import com.costinel.fortouristsbytourists.R;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 

@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.costinel.fortouristsbytourists.Model.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,8 +30,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import java.net.URI;
 
 public class Register extends AppCompatActivity {
 
@@ -208,8 +205,9 @@ public class Register extends AppCompatActivity {
 
     public void updateUI(FirebaseUser currentUser) {
         mDatabase.child(currentUser.getUid()).setValue(user);
-        Intent loginIntent = new Intent(this, MainActivity_logged_in.class);
+        Intent loginIntent = new Intent(this, MainActivity.class);
         loginIntent.putExtra("UID", currentUser.getUid());
+        loginIntent.putExtra("logged", true);
         startActivity(loginIntent);
     }
 }
